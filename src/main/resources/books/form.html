@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>form</title>
+    <style>
+        body {
+            text-align: center;
+        }
+        div.form-row {
+            border-bottom: 1px solid #efefef;
+            margin: 10px;
+            padding-bottom: 10px;
+            width: 260px;
+        }
+
+        div.container {
+            width: 320px;
+            text-align: left;
+            margin: 15% auto 10px auto;
+        }
+
+        .title {
+            float: left;
+            width: 100px;
+            text-align: right;
+            padding-right: 10px;
+        }
+
+        .radio-buttons label {
+            float: none;
+        }
+
+        .submit {
+            text-align: right;
+        }
+    </style>
+</head>
+<body>
+<form action="example.php" method="post">
+    <div class="container">
+        <div class="form-row">
+            <label for="name" class="title">Name:</label> <input type="text" id="name" name="name"/>
+        </div>
+        <div class="form-row">
+            <label for="email" class="title">Email:</label> <input type="email" id="email" name="email"/>
+        </div>
+        <div class="form-row">
+            <span class="title">Gender:</span> <input type="radio" name="gender" id="male" value="M"/> <label for="male">Male</label>
+            <input type="radio" name="gender" id="female" value="F"/> <label for="female">Female</label><br/>
+        </div>
+        <div class="form-row">
+            <input type="submit" value="Register" id="submit"/>
+        </div>
+    </div>
+</form>
+</body>
+</html>

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+>
+<head>
+    <meta charset="UTF-8">
+    <title>wow todo list</title>
+    <style>
+        body {
+            text-align: center;
+        }
+        div.form-row {
+            border-bottom: 1px solid #efefef;
+            margin: 10px;
+            padding-bottom: 10px;
+            width: 260px;
+        }
+
+        div.container {
+            width: 320px;
+            text-align: left;
+            margin: 15% auto 10px auto;
+        }
+
+        .title {
+            float: left;
+            width: 100px;
+            text-align: right;
+            padding-right: 10px;
+        }
+
+        .radio-buttons label {
+            float: none;
+        }
+
+        .submit {
+            text-align: right;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <form th:action="@{/login}" method="post">
+            <div class="form-row">
+                <label for="id" class="title">ID : </label>
+                <input type="text" id="id" name="username" /> <br />
+            </div>
+            <div class="form-row">
+                <label for="password" class="title">password : </label>
+                <input type="password" id="password" name="password" /> <br />
+            </div>
+            <div class="form-row">
+                <input type="submit" class="submit" value="sign in">
+            </div>
+        </form>
+    </div>
+</body>
+</html>
