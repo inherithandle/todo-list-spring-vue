@@ -1,9 +1,6 @@
 package todolist.entity;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 /**
  * Created by hello on 20/08/2018.
@@ -15,13 +12,15 @@ public class Todo {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Long userId;
     private String text;
+
+    @ManyToOne
+    @JoinColumn(name = "projectNo")
+    private Project project;
 
     // due date
     // register date
     // project id
-
 
     public Long getId() {
         return id;
@@ -31,19 +30,19 @@ public class Todo {
         this.id = id;
     }
 
-    public Long getUserId() {
-        return userId;
-    }
-
-    public void setUserId(Long userId) {
-        this.userId = userId;
-    }
-
     public String getText() {
         return text;
     }
 
     public void setText(String text) {
         this.text = text;
+    }
+
+    public Project getProject() {
+        return project;
+    }
+
+    public void setProject(Project project) {
+        this.project = project;
     }
 }

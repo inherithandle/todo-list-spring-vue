@@ -1,3 +1,14 @@
+
+polish main screen
+
+how to ajax?
+
+-------------------
+
+
 make it jsp
 
-make html and css ready
+sign up page
+
+oauth with google, instagram, facebook
+

@@ -8,5 +8,5 @@ import todolist.entity.Todo;
  */
 public interface TodoRepository extends JpaRepository<Todo, Long> {
 
-    Todo findByUserId(long userId);
+
 }

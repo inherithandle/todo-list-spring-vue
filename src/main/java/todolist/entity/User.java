@@ -7,26 +7,28 @@ import org.springframework.security.core.userdetails.UserDetails;
 import javax.persistence.*;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 
 /**
  * Created by hello on 20/08/2018.
  */
 @Entity
-@Table(name = "users")
 public class User implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long userNo;
     private String username;
     private String password;
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Project> projects;
 
-    public Long getId() {
-        return id;
+    public Long getUserNo() {
+        return userNo;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setUserNo(Long userNo) {
+        this.userNo = userNo;
     }
 
     public String getUsername() {
@@ -68,5 +70,13 @@ public class User implements UserDetails {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public List<Project> getProjects() {
+        return projects;
+    }
+
+    public void setProjects(List<Project> projects) {
+        this.projects = projects;
     }
 }

@@ -16,15 +16,15 @@
 
         <h3>Project</h3>
         <ul id="projects">
-          <li>
-            <label>Pay Bills</label>
+          <li th:each="project : ${projects}">
+            <label th:text="${project.projectName}"></label>
             <input type="text"><button class="edit">Edit</button>
             <button class="delete">Delete</button>
           </li>
         </ul>
       </div>
       <div class="todo-container">
-        <!-- todo : expand width and create navigation that consist of projects.. -->
+        <!-- todo : expand width and create  navigation that consist of projects.. -->
 
         <p>
           <label for="new-task">Add Item</label>
@@ -63,7 +63,7 @@
    root container -> margin auto auto. set width
 
   -->
-
+    <script type="text/javascript" src="/library/jQuery3.3.1.js"></script>
     <script type="text/javascript" src="/app.js"></script>
 
   </body>
