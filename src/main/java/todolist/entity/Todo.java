@@ -1,5 +1,7 @@
 package todolist.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 
 /**
@@ -14,8 +16,9 @@ public class Todo {
 
     private String text;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "projectNo")
+    @JsonIgnore
     private Project project;
 
     // due date

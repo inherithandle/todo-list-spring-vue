@@ -34,6 +34,14 @@ public class ProjectController {
         return "todoList";
     }
 
+    @RequestMapping(value= "/vue", method = RequestMethod.GET)
+    public String showUserTodosVue(Authentication authentication, Model model) {
+        User user = (User) authentication.getPrincipal();
+        model.addAttribute("user", user);
+        System.out.println(user.getUsername());
+        return "todoList-vue";
+    }
+
     @PostMapping("")
     public Project addProjects(Authentication authentication, @RequestParam String projectName) {
         User user = (User) authentication.getPrincipal();

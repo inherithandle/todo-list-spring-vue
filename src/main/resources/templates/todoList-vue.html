@@ -1,0 +1,141 @@
+<html>
+  <head>
+    <title>Todo App</title>
+    <!-- <link href='https://fonts.googleapis.com/css?family=Lato:300,400,700' rel='stylesheet' type='text/css'> -->
+    <link rel="stylesheet" href="/todo.css" type="text/css" media="screen" charset="utf-8">
+  </head>
+
+  <body>
+    <template id="project">
+      <div class="project-container">
+        <p>
+          <label for="new-task">Add Project</label>
+          <input type="text" v-model="newTodo" @:click="addBtnClicked"><button>Add</button>
+        </p>
+        <h3>Project</h3>
+        <ul id="projects">
+          <li v-for="(project, index) in projects" v-bind:class="{'selected' : project.selected}" @click="liClicked(index, $event)">
+            <label>{{project.projectName}}</label>
+            <input type="text"><button class="edit">Edit</button>
+            <button class="delete">Delete</button>
+          </li>
+        </ul>
+      </div>
+    </template>
+
+    <div class="root-container" id="root-container">
+      <h1>TODO LIST powered by SpringBoot</h1>
+      <h2>user : ${user.username}</h2>
+      <project v-on:project-selected="projectSelected" v-bind:projects="projects"></project>
+
+      <div class="todo-container">
+        <!-- todo : expand width and create navigation that consist of projects.. -->
+
+        <p>
+          <label for="new-task">Add Item</label>
+          <input id="new-task" type="text"><button>Add</button>
+        </p>
+
+        <h3>Things to do</h3>
+        <ul id="incomplete-tasks">
+          <li>
+            <input type="checkbox">
+            <label>Pay Bills</label>
+            <input type="text"><button class="edit">Edit</button>
+            <button class="delete">Delete</button>
+          </li>
+
+          <li class="editMode">
+            <input type="checkbox">
+            <label>Go Shopping</label>
+            <input type="text" value="Go Shopping">
+            <button class="edit">Edit</button>
+            <button class="delete">Delete</button>
+          </li>
+        </ul>
+
+        <h3>Completed</h3>
+        <ul id="completed-tasks">
+          <li><input type="checkbox" checked><label>See the Doctor</label><input type="text"><button class="edit">Edit</button><button class="delete">Delete</button></li>
+        </ul>
+      </div>
+    </div>
+
+
+  <!--
+   root container -> margin auto auto. set width
+  -->
+    <script type="text/javascript" src="/library/jQuery3.3.1.js"></script>
+    <script type="text/javascript" src="/library/vue.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script>
+      var data = {
+        items: [{ text: 'Bananas', checked: true }, { text: 'Apples', checked: false }],
+        title: 'My Shopping List',
+        newItem: ''
+      };
+
+      Vue.component("project", {
+        template: "#project",
+        props: ['projects'],
+        data : function() {
+          return {
+            newTodo : ''
+          }
+        },
+        methods : {
+          addBtnClicked : function () {
+            var newTodo;
+            newTodo = this.newTodo.trim();
+
+            if (newTodo === '') {
+              alert("todo name is required");
+            } else {
+              axios
+                .post('/rest/projects')
+                .then(response => {
+                  var a = response;
+                });
+            }
+          },
+          liClicked : function (index, event) {
+            this.$emit('project-selected', index);
+          }
+        }
+      });
+
+      new Vue({
+        el: '#root-container',
+        data: function() {
+          return {
+            projects: []
+          }
+        },
+        methods: {
+          addItem: function () { // to be removed...
+            return null;
+          },
+
+          projectSelected : function (index) {
+            var selectedProject = this.projects.find(e => {
+              return e.selected;
+            });
+
+            selectedProject.selected = false;
+            this.projects[index].selected = true;
+
+          }
+        },
+        mounted : function () {
+          axios
+            .get('/rest/projects')
+            .then(response => {
+            console.log(response);
+            this.projects = response.data;
+          });
+        }
+      });
+    </script>
+
+  </body>
+</html>

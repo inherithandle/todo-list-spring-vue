@@ -5,7 +5,7 @@ body {
   font-family: Lato, sans-serif;
 }
 
-.root-container {
+#root-container {
   width: 1000px;
   margin: 10px auto 10px auto;
 }
@@ -32,6 +32,11 @@ li, h3 {
   clear:both;
   list-style:none;
 }
+
+li.selected {
+  background-color: blue;
+}
+
 input, button {
   outline: none;
 }
