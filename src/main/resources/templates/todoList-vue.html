@@ -23,14 +23,8 @@
       </div>
     </template>
 
-    <div class="root-container" id="root-container">
-      <h1>TODO LIST powered by SpringBoot</h1>
-      <h2>user : ${user.username}</h2>
-      <project v-on:project-selected="projectSelected" v-bind:projects="projects"></project>
-
+    <template id="todos">
       <div class="todo-container">
-        <!-- todo : expand width and create navigation that consist of projects.. -->
-
         <p>
           <label for="new-task">Add Item</label>
           <input id="new-task" type="text"><button>Add</button>
@@ -38,18 +32,10 @@
 
         <h3>Things to do</h3>
         <ul id="incomplete-tasks">
-          <li>
+          <li v-for="(todo, index) in currentProject.todos">
             <input type="checkbox">
-            <label>Pay Bills</label>
+            <label>{{ todo.text }}</label>
             <input type="text"><button class="edit">Edit</button>
-            <button class="delete">Delete</button>
-          </li>
-
-          <li class="editMode">
-            <input type="checkbox">
-            <label>Go Shopping</label>
-            <input type="text" value="Go Shopping">
-            <button class="edit">Edit</button>
             <button class="delete">Delete</button>
           </li>
         </ul>
@@ -59,12 +45,15 @@
           <li><input type="checkbox" checked><label>See the Doctor</label><input type="text"><button class="edit">Edit</button><button class="delete">Delete</button></li>
         </ul>
       </div>
+    </template>
+
+    <div class="root-container" id="root-container">
+      <h1>TODO LIST powered by SpringBoot</h1>
+      <h2>user : ${user.username}</h2>
+      <project v-on:project-selected="projectSelected" v-bind:projects="projects"></project>
+      <todos v-bind:current-index="currentIndex" v-bind:projects="projects"></todos>
     </div>
 
-
-  <!--
-   root container -> margin auto auto. set width
-  -->
     <script type="text/javascript" src="/library/jQuery3.3.1.js"></script>
     <script type="text/javascript" src="/library/vue.js"></script>
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
@@ -104,11 +93,33 @@
         }
       });
 
+      Vue.component("todos", {
+        template: "#todos",
+        props: ['projects', 'currentIndex'],
+        data : function() {
+          return {
+            newTodo : ''
+          }
+        },
+        methods : {
+          liClicked : function (index, event) {
+            return null;
+          }
+        },
+        computed : {
+          currentProject : function() {
+            return this.projects[this.currentIndex];
+            // I wanted to return this.projects[this.currentIndex].todos, but it is undefined. why?
+          }
+        }
+      });
+
       new Vue({
         el: '#root-container',
         data: function() {
           return {
-            projects: []
+            projects: [],
+            currentIndex : 0
           }
         },
         methods: {
@@ -123,7 +134,7 @@
 
             selectedProject.selected = false;
             this.projects[index].selected = true;
-
+            this.currentIndex = index;
           }
         },
         mounted : function () {
@@ -133,6 +144,8 @@
             console.log(response);
             this.projects = response.data;
           });
+
+          // TODO : put username into session storage if session storage is empty.
         }
       });
     </script>
