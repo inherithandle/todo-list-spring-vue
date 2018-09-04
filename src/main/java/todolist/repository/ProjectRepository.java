@@ -16,6 +16,7 @@ public interface ProjectRepository extends JpaRepository<Project, Long> {
     @Query("SELECT p FROM project p left join fetch p.todos WHERE p.user.userNo = :userNo")
     List<Project> findFirstProjectBy(@Param("userNo") long userNo, Pageable pageable);
 
-    @Query("SELECT p FROM project p WHERE p.user.userNo = :userNo")
+    // TODO : fetch join
+    @Query("SELECT DISTINCT p FROM project p left join fetch p.todos WHERE p.user.userNo = :userNo")
     List<Project> findByUserNo(@Param("userNo") long userNo);
 }

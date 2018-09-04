@@ -5,8 +5,10 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
+import todolist.dto.ProjectDTO;
 import todolist.entity.Project;
 import todolist.entity.User;
+import todolist.repository.ProjectRepository;
 import todolist.repository.UserRepository;
 
 import java.util.List;
@@ -26,6 +28,9 @@ public class ProjectServiceTest {
 
     @Autowired
     ProjectService projectService;
+
+    @Autowired
+    ProjectRepository projectRepository;
 
     @Autowired
     UserRepository userRepository;
@@ -58,6 +63,21 @@ public class ProjectServiceTest {
         Optional<User> user = userRepository.findById(JOMA_USER_NO);
 
         projectService.addProject(projectName, user.get());
+    }
+
+    @Test
+    public void updateProjectTest() {
+        User user = new User();
+        user.setUserNo(JOMA_USER_NO);
+        String projectName = "edited";
+        ProjectDTO projectDTO = new ProjectDTO();
+        projectDTO.setProjectName(projectName);
+        projectDTO.setProjectNo(1L);
+
+        projectService.updateProject(user, projectDTO);
+
+        Project firstProject = projectService.getFirstProjectBy(JOMA_USER_NO);
+        assertThat(firstProject.getProjectName(), is("edited"));
     }
 
 }

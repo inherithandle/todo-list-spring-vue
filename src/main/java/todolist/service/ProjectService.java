@@ -3,7 +3,9 @@ package todolist.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import todolist.dto.ProjectDTO;
 import todolist.entity.Project;
 import todolist.entity.User;
 import todolist.repository.ProjectRepository;
@@ -48,6 +50,13 @@ public class ProjectService {
 
         projectRepository.save(project);
 
+        return project;
+    }
+
+    @Transactional(propagation = Propagation.REQUIRED)
+    public Project updateProject(User user, ProjectDTO projectDTO) {
+        Project project = projectRepository.findById(projectDTO.getProjectNo()).orElseThrow(RuntimeException::new);
+        project.setProjectName(projectDTO.getProjectName());
         return project;
     }
 }

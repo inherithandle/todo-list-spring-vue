@@ -22,6 +22,8 @@ public class ProjectDTO {
 
     private boolean selected;
 
+    private boolean edited;
+
     public Long getProjectNo() {
         return projectNo;
     }

@@ -3,9 +3,7 @@ package todolist.controller;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import todolist.dto.ProjectDTO;
 import todolist.entity.Project;
 import todolist.entity.User;
@@ -33,6 +31,19 @@ public class ProjectRestController {
         projectDTOs.get(0).setSelected(true);
 
         return projectDTOs;
+    }
+
+    @PutMapping("/project")
+    public ProjectDTO updateProject(Authentication authentication, @RequestBody ProjectDTO projectDTO) {
+        User user = (User) authentication.getPrincipal();
+        Project project = projectService.updateProject(user, projectDTO);
+        return toProjectDTO(project);
+    }
+
+    private ProjectDTO toProjectDTO(Project model) {
+        ProjectDTO projectDTO = new ProjectDTO();
+        BeanUtils.copyProperties(model, projectDTO);
+        return projectDTO;
     }
 
     private List<ProjectDTO> toProjectDTOList(List<Project> model) {

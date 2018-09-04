@@ -124,6 +124,7 @@ li > .delete:hover {
 }
 
 /* Edit Task */
+/*
 ul li input[type=text] {
   display:none;
 }
@@ -135,3 +136,4 @@ ul li.editMode input[type=text] {
 ul li.editMode label {
   display:none;
 }
+*/
