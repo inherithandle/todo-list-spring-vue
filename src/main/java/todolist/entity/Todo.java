@@ -21,6 +21,8 @@ public class Todo {
     @JsonIgnore
     private Project project;
 
+    private boolean completed;
+
     // due date
     // register date
     // project id
@@ -47,5 +49,13 @@ public class Todo {
 
     public void setProject(Project project) {
         this.project = project;
+    }
+
+    public boolean isCompleted() {
+        return completed;
+    }
+
+    public void setCompleted(boolean completed) {
+        this.completed = completed;
     }
 }

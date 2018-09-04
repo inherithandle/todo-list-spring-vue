@@ -121,7 +121,18 @@
         computed : {
           todos : function() {
             if (this.projects && this.projects[this.currentIndex] && this.projects[this.currentIndex].todos) {
-              return this.projects[this.currentIndex].todos;
+              return this.projects[this.currentIndex].todos.filter(e => {
+                return !e.completed;
+            });
+            } else {
+              return null;
+            }
+          },
+          completedTodos : function() {
+            if (this.projects && this.projects[this.currentIndex] && this.projects[this.currentIndex].todos) {
+              return this.projects[this.currentIndex].todos.filter(e => {
+                return e.completed;
+              });
             } else {
               return null;
             }
