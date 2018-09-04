@@ -33,16 +33,22 @@
         <h3>Things to do</h3>
         <ul id="incomplete-tasks">
           <li v-for="(todo, index) in todos">
-            <input type="checkbox">
+            <input type="checkbox" @click="completedCheckboxClicked(todo.id)" v-model="todo.completed">
             <label>{{ todo.text }}</label>
-            <input type="text"><button class="edit">Edit</button>
+            <input type="text" v-if="todo.edited"><button class="edit">Edit</button>
             <button class="delete">Delete</button>
           </li>
         </ul>
 
         <h3>Completed</h3>
         <ul id="completed-tasks">
-          <li><input type="checkbox" checked><label>See the Doctor</label><input type="text"><button class="edit">Edit</button><button class="delete">Delete</button></li>
+          <li v-for="(todo, index) in completedTodos">
+            <input type="checkbox" v-model="todo.completed">
+            <label>{{ todo.text }}</label>
+            <input type="text" v-if="todo.edited">
+            <button class="edit">Edit</button>
+            <button class="delete">Delete</button>
+          </li>
         </ul>
       </div>
     </template>
@@ -56,7 +62,11 @@
               v-on:edit-btn-clicked="editBtnClicked"
               v-on:add-project-btn-clicked="addProjectBtnClicked"
       ></project>
-      <todos v-bind:current-index="currentIndex" v-bind:projects="projects"></todos>
+      <todos
+              v-bind:current-index="currentIndex"
+              v-bind:projects="projects"
+              v-on:completed-checkbox-clicked="completedCheckboxClicked"
+      ></todos>
     </div>
 
     <script type="text/javascript" src="/library/jQuery3.3.1.js"></script>
@@ -114,8 +124,8 @@
           }
         },
         methods : {
-          liClicked : function (index, event) {
-            return null;
+          completedCheckboxClicked : function (id) {
+            this.$emit('completed-checkbox-clicked', id);
           }
         },
         computed : {
@@ -206,6 +216,12 @@
               this.currentIndex = this.projects.length - 1;
             });
 
+          },
+          completedCheckboxClicked : function (id) {
+            var todo = this.projects[this.currentIndex].todos.find(e => {
+              return e.id == id;
+            });
+            todo.completed = !(todo.completed);
           }
         },
         mounted : function () {
@@ -217,7 +233,6 @@
 
               for (var i in this.projects) {
                 this.projects[i].newProjectName = this.projects[i].projectName;
-                this.$set(this.projects[i], 'edited', false);
               }
           });
 

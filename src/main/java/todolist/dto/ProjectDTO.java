@@ -1,7 +1,6 @@
 package todolist.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import todolist.entity.Todo;
 import todolist.entity.User;
 
 import java.util.List;
@@ -18,7 +17,7 @@ public class ProjectDTO {
     @JsonIgnore
     private User user;
 
-    private List<Todo> todos;
+    private List<TodoDTO> todos;
 
     private boolean selected;
 
@@ -40,11 +39,11 @@ public class ProjectDTO {
         this.projectName = projectName;
     }
 
-    public List<Todo> getTodos() {
+    public List<TodoDTO> getTodos() {
         return todos;
     }
 
-    public void setTodos(List<Todo> todos) {
+    public void setTodos(List<TodoDTO> todos) {
         this.todos = todos;
     }
 
@@ -62,5 +61,13 @@ public class ProjectDTO {
 
     public void setSelected(boolean selected) {
         this.selected = selected;
+    }
+
+    public boolean isEdited() {
+        return edited;
+    }
+
+    public void setEdited(boolean edited) {
+        this.edited = edited;
     }
 }

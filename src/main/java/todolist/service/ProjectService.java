@@ -69,7 +69,6 @@ public class ProjectService {
         Project project = new Project();
         project.setProjectName(projectDTO.getProjectName());
         project.setUser(userRepository.getOne(user.getUserNo()));
-        project.setTodos(projectDTO.getTodos());
 
         return projectRepository.save(project);
     }
