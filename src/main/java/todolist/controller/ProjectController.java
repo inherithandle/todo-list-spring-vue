@@ -38,7 +38,6 @@ public class ProjectController {
     public String showUserTodosVue(Authentication authentication, Model model) {
         User user = (User) authentication.getPrincipal();
         model.addAttribute("user", user);
-        System.out.println(user.getUsername());
         return "todoList-vue";
     }
 

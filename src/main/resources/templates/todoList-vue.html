@@ -10,7 +10,7 @@
       <div class="project-container">
         <p>
           <label for="new-task">Add Project</label>
-          <input type="text" v-model="newTodo" @:click="addBtnClicked"><button>Add</button>
+          <input type="text" v-model="newProjectName"><button @click="addProjectBtnClicked">Add</button>
         </p>
         <h3>Project</h3>
         <ul id="projects">
@@ -50,7 +50,12 @@
     <div class="root-container" id="root-container">
       <h1>TODO LIST powered by SpringBoot</h1>
       <h2>user : ${user.username}</h2>
-      <project v-on:project-selected="projectSelected" v-bind:projects="projects" v-on:edit-btn-clicked="editBtnClicked"></project>
+      <project
+              v-on:project-selected="projectSelected"
+              v-bind:projects="projects"
+              v-on:edit-btn-clicked="editBtnClicked"
+              v-on:add-project-btn-clicked="addProjectBtnClicked"
+      ></project>
       <todos v-bind:current-index="currentIndex" v-bind:projects="projects"></todos>
     </div>
 
@@ -69,7 +74,8 @@
         props: ['projects'],
         data : function() {
           return {
-            newTodo : ''
+            newTodo : '',
+            newProjectName : ''
           }
         },
         methods : {
@@ -92,6 +98,9 @@
           },
           editBtnClicked : function (index) {
             this.$emit('edit-btn-clicked', index);
+          },
+          addProjectBtnClicked : function () {
+            this.$emit('add-project-btn-clicked', this.newProjectName);
           }
         }
       });
@@ -125,7 +134,7 @@
         data: function() {
           return {
             projects: [],
-            currentIndex : 0
+            currentIndex : 0,
           }
         },
         methods: {
@@ -169,6 +178,23 @@
             } else {
               this.projects[this.currentIndex].edited = !(this.projects[this.currentIndex].edited);
             }
+          },
+          addProjectBtnClicked : function (newProjectName) {
+            var project = {};
+            project.projectName = newProjectName;
+            project.projectNo = 0;
+            project.todos = [];
+            project.edited = false;
+            project.selected = true;
+            project.newProjectName = newProjectName;
+
+            axios.post('/rest/project', project).then(response => {
+              project.projectNo = response.data.projectNo;
+              this.projects[this.currentIndex].selected = false;
+              this.projects.push(project);
+              this.currentIndex = this.projects.length - 1;
+            });
+
           }
         },
         mounted : function () {

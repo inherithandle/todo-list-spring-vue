@@ -9,6 +9,7 @@ import todolist.dto.ProjectDTO;
 import todolist.entity.Project;
 import todolist.entity.User;
 import todolist.repository.ProjectRepository;
+import todolist.repository.UserRepository;
 
 import java.util.List;
 
@@ -20,6 +21,9 @@ public class ProjectService {
 
     @Autowired
     ProjectRepository projectRepository;
+
+    @Autowired
+    UserRepository userRepository;
 
 
     /**
@@ -58,5 +62,15 @@ public class ProjectService {
         Project project = projectRepository.findById(projectDTO.getProjectNo()).orElseThrow(RuntimeException::new);
         project.setProjectName(projectDTO.getProjectName());
         return project;
+    }
+
+    @Transactional
+    public Project insertProject(User user, ProjectDTO projectDTO) {
+        Project project = new Project();
+        project.setProjectName(projectDTO.getProjectName());
+        project.setUser(userRepository.getOne(user.getUserNo()));
+        project.setTodos(projectDTO.getTodos());
+
+        return projectRepository.save(project);
     }
 }

@@ -33,6 +33,13 @@ public class ProjectRestController {
         return projectDTOs;
     }
 
+    @PostMapping("/project")
+    public ProjectDTO insertProject(Authentication authentication, @RequestBody ProjectDTO projectDTO) {
+        User user = (User) authentication.getPrincipal();
+        Project project = projectService.insertProject(user, projectDTO);
+        return toProjectDTO(project);
+    }
+
     @PutMapping("/project")
     public ProjectDTO updateProject(Authentication authentication, @RequestBody ProjectDTO projectDTO) {
         User user = (User) authentication.getPrincipal();
