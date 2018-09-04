@@ -1,7 +1,13 @@
 package todolist.service;
 
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import todolist.dto.TodoDTO;
+import todolist.entity.Todo;
+import todolist.repository.ProjectRepository;
+import todolist.repository.TodoRepository;
 
 /**
  * Created by hello on 28/08/2018.
@@ -10,9 +16,17 @@ import org.springframework.stereotype.Service;
 public class TodoService {
 
     @Autowired
-    TodoService todoService;
+    TodoRepository todoRepository;
 
-    public void updateTodo() {
+    @Autowired
+    ProjectRepository projectRepository;
 
+    @Transactional
+    public Todo addTodo(TodoDTO todoDTO) {
+        Todo todo = new Todo();
+        BeanUtils.copyProperties(todoDTO, todo);
+        todo.setProject(projectRepository.getOne(todoDTO.getProjectNo()));
+
+        return todoRepository.save(todo);
     }
 }

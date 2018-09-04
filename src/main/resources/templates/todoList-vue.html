@@ -27,13 +27,13 @@
       <div class="todo-container">
         <p>
           <label for="new-task">Add Item</label>
-          <input id="new-task" type="text"><button>Add</button>
+          <input id="new-task" type="text" v-model="newTodo"><button @click="addTodoBtnClicked">Add</button>
         </p>
 
         <h3>Things to do</h3>
         <ul id="incomplete-tasks">
           <li v-for="(todo, index) in todos">
-            <input type="checkbox" @click="completedCheckboxClicked(todo.id)" v-model="todo.completed">
+            <input type="checkbox" @change="completedCheckboxClicked(todo.id)" v-model="todo.completed">
             <label>{{ todo.text }}</label>
             <input type="text" v-if="todo.edited"><button class="edit">Edit</button>
             <button class="delete">Delete</button>
@@ -66,6 +66,7 @@
               v-bind:current-index="currentIndex"
               v-bind:projects="projects"
               v-on:completed-checkbox-clicked="completedCheckboxClicked"
+              v-on:add-todo-btn-clicked="addTodoBtnClicked"
       ></todos>
     </div>
 
@@ -84,7 +85,6 @@
         props: ['projects'],
         data : function() {
           return {
-            newTodo : '',
             newProjectName : ''
           }
         },
@@ -126,6 +126,14 @@
         methods : {
           completedCheckboxClicked : function (id) {
             this.$emit('completed-checkbox-clicked', id);
+          },
+          addTodoBtnClicked : function () {
+            var todoName = this.newTodo.trim();
+            if (todoName) {
+              this.$emit('add-todo-btn-clicked', todoName);
+            } else {
+              alert('must not be empty');
+            }
           }
         },
         computed : {
@@ -218,22 +226,33 @@
 
           },
           completedCheckboxClicked : function (id) {
-            var todo = this.projects[this.currentIndex].todos.find(e => {
-              return e.id == id;
+
+            // axios put, db update. completed true.
+          },
+          addTodoBtnClicked : function(todoName) {
+            var todo = {};
+            todo.id = 0;
+            todo.text = todoName;
+            todo.completed = false;
+            todo.edited = false;
+            todo.projectNo = this.projects[this.currentIndex].projectNo;
+
+            axios.post('/rest/todo', todo).then(response => {
+              console.log(this.projects[this.currentIndex].todos.length);
+              todo.id = response.data.id;
+              var length = this.projects[this.currentIndex].todos.length;
+              this.projects[this.currentIndex].todos.splice(length, 0, todo);
             });
-            todo.completed = !(todo.completed);
           }
         },
         mounted : function () {
-          axios
-            .get('/rest/projects')
-            .then(response => {
-              console.log(response.data);
-              this.projects = response.data;
+          axios.get('/rest/projects').then(response => {
+            console.log(response.data);
+            this.projects = response.data;
 
-              for (var i in this.projects) {
-                this.projects[i].newProjectName = this.projects[i].projectName;
-              }
+            for (var i in this.projects) {
+              this.projects[i].newProjectName = this.projects[i].projectName;
+            }
           });
 
           // TODO : put username into session storage if session storage is empty.

@@ -13,6 +13,8 @@ public class TodoDTO {
 
     private boolean edited;
 
+    private Long projectNo;
+
     public Long getId() {
         return id;
     }
@@ -43,5 +45,13 @@ public class TodoDTO {
 
     public void setEdited(boolean edited) {
         this.edited = edited;
+    }
+
+    public Long getProjectNo() {
+        return projectNo;
+    }
+
+    public void setProjectNo(Long projectNo) {
+        this.projectNo = projectNo;
     }
 }
