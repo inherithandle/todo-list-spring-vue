@@ -34,9 +34,10 @@
         <ul id="incomplete-tasks">
           <li v-for="(todo, index) in todos">
             <input type="checkbox" @change="completedCheckboxClicked(todo.id)" v-model="todo.completed">
-            <label>{{ todo.text }}</label>
-            <input type="text" v-if="todo.edited"><button class="edit">Edit</button>
-            <button class="delete">Delete</button>
+            <label v-if="!todo.edited">{{ todo.text }}</label>
+            <input type="text" v-if="todo.edited" v-model="todo.newTodoName">
+            <button class="edit" @click="editTodoBtnClicked(todo.id)">Edit</button>
+            <button class="delete" @click="deleteTodoBtnClicked(todo.id)">Delete</button>
           </li>
         </ul>
 
@@ -44,9 +45,9 @@
         <ul id="completed-tasks">
           <li v-for="(todo, index) in completedTodos">
             <input type="checkbox" v-model="todo.completed">
-            <label>{{ todo.text }}</label>
-            <input type="text" v-if="todo.edited">
-            <button class="edit">Edit</button>
+            <label v-if="!todo.edited">{{ todo.text }}</label>
+            <input type="text" v-if="todo.edited" v-model="todo.newTodoName">
+            <button class="edit" @click="editTodoBtnClicked(todo.id)">Edit</button>
             <button class="delete">Delete</button>
           </li>
         </ul>
@@ -66,7 +67,9 @@
               v-bind:current-index="currentIndex"
               v-bind:projects="projects"
               v-on:completed-checkbox-clicked="completedCheckboxClicked"
+              v-on:edit-todo-btn-clicked="editTodoBtnClicked"
               v-on:add-todo-btn-clicked="addTodoBtnClicked"
+              v-on:delete-todo-btn-clicked="deleteTodoBtnClicked"
       ></todos>
     </div>
 
@@ -131,9 +134,16 @@
             var todoName = this.newTodo.trim();
             if (todoName) {
               this.$emit('add-todo-btn-clicked', todoName);
+              this.newTodo = '';
             } else {
               alert('must not be empty');
             }
+          },
+          editTodoBtnClicked : function (id) {
+            this.$emit('edit-todo-btn-clicked', id);
+          },
+          deleteTodoBtnClicked : function (id) {
+            this.$emit('delete-todo-btn-clicked', id);
           }
         },
         computed : {
@@ -184,7 +194,6 @@
           editBtnClicked : function (index) {
             // project should be selected first, before clicking on edit.
             if (!this.projects[index].selected) {
-              console.log('not selected');
               return ;
             }
 
@@ -236,12 +245,46 @@
             todo.completed = false;
             todo.edited = false;
             todo.projectNo = this.projects[this.currentIndex].projectNo;
+            todo.newTodoName = todoName;
 
             axios.post('/rest/todo', todo).then(response => {
               console.log(this.projects[this.currentIndex].todos.length);
               todo.id = response.data.id;
               var length = this.projects[this.currentIndex].todos.length;
               this.projects[this.currentIndex].todos.splice(length, 0, todo);
+            });
+          },
+          editTodoBtnClicked : function (id) {
+            var todo = this.projects[this.currentIndex].todos.find(e => {
+              return e.id == id;
+            });
+
+            var promise = null;
+            if (todo.edited) {
+              if (todo.text !== todo.newTodoName) {
+                todo.text = todo.newTodoName;
+                // axios
+                promise = axios.put('/rest/todo', todo);
+              }
+            }
+
+            if (promise != null) {
+              promise.then(response => {
+                this.$set(todo, 'edited', !todo.edited);
+              });
+            } else {
+              console.log('expected');
+              this.$set(todo, 'edited', !todo.edited);
+            }
+
+          },
+          deleteTodoBtnClicked : function(id) {
+            var index = this.projects[this.currentIndex].todos.findIndex(e => {
+              return e.id == id;
+            });
+
+            axios.delete('/rest/todo', {data : this.projects[this.currentIndex].todos[index]}).then(response => {
+              this.projects[this.currentIndex].todos.splice(index, 1);
             });
           }
         },
@@ -251,7 +294,11 @@
             this.projects = response.data;
 
             for (var i in this.projects) {
-              this.projects[i].newProjectName = this.projects[i].projectName;
+              this.$set(this.projects[i], 'newProjectName', this.projects[i].projectName);
+
+              for (var j in this.projects[i].todos) {
+                this.$set(this.projects[i].todos[j], 'newTodoName', this.projects[i].todos[j].text);
+              }
             }
           });
 

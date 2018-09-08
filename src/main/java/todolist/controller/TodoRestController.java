@@ -1,11 +1,9 @@
 package todolist.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import todolist.dto.TodoDTO;
 import todolist.entity.Todo;
 import todolist.service.TodoService;
@@ -26,5 +24,17 @@ public class TodoRestController {
         todoDTO.setId(todo.getId());
 
         return todoDTO;
+    }
+
+    @PutMapping("/todo")
+    public TodoDTO updateTodo(Authentication authentication, @RequestBody TodoDTO todoDTO) {
+        todoService.updateTodo(todoDTO);
+        return todoDTO;
+    }
+
+    @DeleteMapping("/todo")
+    public ResponseEntity<Void> deleteTodo(Authentication authentication, @RequestBody TodoDTO todoDTO) {
+        todoService.deleteTodo(todoDTO.getId());
+        return ResponseEntity.noContent().build();
     }
 }

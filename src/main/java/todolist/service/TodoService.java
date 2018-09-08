@@ -29,4 +29,15 @@ public class TodoService {
 
         return todoRepository.save(todo);
     }
+
+    @Transactional
+    public void updateTodo(TodoDTO todoDTO) {
+        Todo todo = todoRepository.findById(todoDTO.getId()).orElseThrow(RuntimeException::new);
+        todo.setText(todoDTO.getText());
+    }
+
+    @Transactional
+    public void deleteTodo(Long id) {
+        todoRepository.deleteById(id);
+    }
 }
