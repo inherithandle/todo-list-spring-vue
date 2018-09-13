@@ -2,6 +2,7 @@ package todolist.controller;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import todolist.dto.ProjectDTO;
@@ -38,6 +39,13 @@ public class ProjectRestController {
         User user = (User) authentication.getPrincipal();
         Project project = projectService.insertProject(user, projectDTO);
         return toProjectDTO(project);
+    }
+
+    @DeleteMapping("/project")
+    public ResponseEntity<?> deleteProject(Authentication authentication, @RequestBody ProjectDTO projectDTO) {
+        User user = (User) authentication.getPrincipal();
+        projectService.deleteProject(projectDTO);
+        return ResponseEntity.noContent().build();
     }
 
     @PutMapping("/project")

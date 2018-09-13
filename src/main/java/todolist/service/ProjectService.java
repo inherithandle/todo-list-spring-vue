@@ -9,6 +9,7 @@ import todolist.dto.ProjectDTO;
 import todolist.entity.Project;
 import todolist.entity.User;
 import todolist.repository.ProjectRepository;
+import todolist.repository.TodoRepository;
 import todolist.repository.UserRepository;
 
 import java.util.List;
@@ -21,6 +22,9 @@ public class ProjectService {
 
     @Autowired
     ProjectRepository projectRepository;
+    
+    @Autowired
+    TodoRepository todoRepository;
 
     @Autowired
     UserRepository userRepository;
@@ -71,5 +75,11 @@ public class ProjectService {
         project.setUser(userRepository.getOne(user.getUserNo()));
 
         return projectRepository.save(project);
+    }
+
+    @Transactional
+    public int deleteProject(ProjectDTO projectDTO) {
+        todoRepository.deleteTodosByProjectNo(projectDTO.getProjectNo());
+        return projectRepository.deleteProjectByProjectNo(projectDTO.getProjectNo());
     }
 }

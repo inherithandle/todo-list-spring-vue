@@ -17,7 +17,8 @@
           <li v-for="(project, index) in projects" v-bind:class="{'selected' : project.selected}" @click="liClicked(index, $event)">
             <label v-if="!project.edited">{{project.projectName}}</label>
             <input type="text" v-if="project.edited" v-model="project.newProjectName">
-            <button class="edit" @click="editBtnClicked(index)">Edit</button><button class="delete">Delete</button>
+            <button class="edit" @click="editBtnClicked(index)">Edit</button>
+            <button class="delete" @click="deleteBtnClicked(index)">Delete</button>
           </li>
         </ul>
       </div>
@@ -61,6 +62,7 @@
               v-on:project-selected="projectSelected"
               v-bind:projects="projects"
               v-on:edit-btn-clicked="editBtnClicked"
+              v-on:delete-btn-clicked="deleteBtnClicked"
               v-on:add-project-btn-clicked="addProjectBtnClicked"
       ></project>
       <todos
@@ -111,6 +113,9 @@
           },
           editBtnClicked : function (index) {
             this.$emit('edit-btn-clicked', index);
+          },
+          deleteBtnClicked : function (index) {
+            this.$emit('delete-btn-clicked', index);
           },
           addProjectBtnClicked : function () {
             this.$emit('add-project-btn-clicked', this.newProjectName);
@@ -216,6 +221,23 @@
             } else {
               this.projects[this.currentIndex].edited = !(this.projects[this.currentIndex].edited);
             }
+          },
+          deleteBtnClicked : function (index) {
+            // project should be selected first, before clicking on edit.
+            if (!this.projects[index].selected) {
+              return ;
+            }
+
+            if (this.projects.length == 1) {
+              alert("at least 1 project must exists.");
+              return ;
+            }
+
+            axios.delete('/rest/project', {data : this.projects[this.currentIndex]}).then(response => {
+              this.projects.splice(this.currentIndex, 1);
+              this.currentIndex = 0;
+              this.projects[0].selected = true;
+            });
           },
           addProjectBtnClicked : function (newProjectName) {
             var project = {};

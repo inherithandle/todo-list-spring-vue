@@ -7,7 +7,7 @@ import javax.persistence.*;
 /**
  * Created by hello on 20/08/2018.
  */
-@Entity
+@Entity(name = "todo")
 public class Todo {
 
     @Id
