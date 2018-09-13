@@ -57,7 +57,7 @@
 
     <div class="root-container" id="root-container">
       <h1>TODO LIST powered by SpringBoot</h1>
-      <h2>user : ${user.username}</h2>
+      <h2 th:text="'username : ' + ${user.username}">username : </h2>
       <h2><a href="#" @click="logoutBtnClicked">logout</a></h2>
 
       <project
@@ -219,6 +219,10 @@
               promise.then(response => {
                 this.projects[this.currentIndex].edited = !(this.projects[this.currentIndex].edited);
                 console.log(self.projects[self.currentIndex].edited);
+              }).catch(e => {
+                console.log(e.response);
+                alert('internet connection cut off or something wrong with backend server.');
+                location.reload();
               });
             } else {
               this.projects[this.currentIndex].edited = !(this.projects[this.currentIndex].edited);
@@ -239,6 +243,10 @@
               this.projects.splice(this.currentIndex, 1);
               this.currentIndex = 0;
               this.projects[0].selected = true;
+            }).catch(e => {
+              console.log(e.response);
+              alert('internet connection cut off or something wrong with backend server.');
+              location.reload();
             });
           },
           addProjectBtnClicked : function (newProjectName) {
@@ -255,8 +263,11 @@
               this.projects[this.currentIndex].selected = false;
               this.projects.push(project);
               this.currentIndex = this.projects.length - 1;
+            }).catch(e => {
+              console.log(e.response);
+              alert('internet connection cut off or something wrong with backend server.');
+              location.reload();
             });
-
           },
           completedCheckboxClicked : function (id) {
 
@@ -276,6 +287,10 @@
               todo.id = response.data.id;
               var length = this.projects[this.currentIndex].todos.length;
               this.projects[this.currentIndex].todos.splice(length, 0, todo);
+            }).catch(e => {
+              console.log(e.response);
+              alert('internet connection cut off or something wrong with backend server.');
+              location.reload();
             });
           },
           editTodoBtnClicked : function (id) {
@@ -295,6 +310,10 @@
             if (promise != null) {
               promise.then(response => {
                 this.$set(todo, 'edited', !todo.edited);
+              }).catch(e => {
+                console.log(e.response);
+                alert('internet connection cut off or something wrong with backend server.');
+                location.reload();
               });
             } else {
               console.log('expected');
@@ -309,6 +328,10 @@
 
             axios.delete('/rest/todo', {data : this.projects[this.currentIndex].todos[index]}).then(response => {
               this.projects[this.currentIndex].todos.splice(index, 1);
+            }).catch(e => {
+              console.log(e.response);
+              alert('internet connection cut off or something wrong with backend server.');
+              location.reload();
             });
           },
           logoutBtnClicked : function() {
@@ -327,9 +350,10 @@
                 this.$set(this.projects[i].todos[j], 'newTodoName', this.projects[i].todos[j].text);
               }
             }
+          }).catch(error => {
+            console.log(error.response);
+            alert('internet connection cut off or something wrong with backend server.');
           });
-
-          // TODO : put username into session storage if session storage is empty.
         }
       });
     </script>
