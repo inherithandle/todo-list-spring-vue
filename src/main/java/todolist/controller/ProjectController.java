@@ -17,7 +17,6 @@ import java.util.List;
  * Created by hello on 29/08/2018.
  */
 @Controller
-@RequestMapping("/projects")
 public class ProjectController {
 
     private ProjectService projectService;
@@ -26,7 +25,7 @@ public class ProjectController {
         this.projectService = projectService;
     }
 
-    @RequestMapping(value= "", method = RequestMethod.GET)
+    @RequestMapping(value= "/projects", method = RequestMethod.GET)
     public String showUserTodos(Authentication authentication, Model model) {
         User user = (User) authentication.getPrincipal();
         List<Project> projects = projectService.getProjectForMainScreen(user.getUserNo());
@@ -34,14 +33,14 @@ public class ProjectController {
         return "todoList";
     }
 
-    @RequestMapping(value= "/vue", method = RequestMethod.GET)
+    @RequestMapping(value= {"/", "/projects/vue"}, method = RequestMethod.GET)
     public String showUserTodosVue(Authentication authentication, Model model) {
         User user = (User) authentication.getPrincipal();
         model.addAttribute("user", user);
         return "todoList-vue";
     }
 
-    @PostMapping("")
+    @PostMapping("/projects")
     public Project addProjects(Authentication authentication, @RequestParam String projectName) {
         User user = (User) authentication.getPrincipal();
         return projectService.addProject(projectName, user);
